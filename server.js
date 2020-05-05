@@ -13,28 +13,37 @@ var PORT = process.env.PORT || 8080;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+//Load data source which hold the notes information
+var data = require("./db/db.json");
 
 // Routing
 
-// HTML GET Requests. Below code handles when users "visit" a page.
-// In each of the below cases the user is shown an HTML page of content
+// HTML GET Requests. Below code handles when users "visit" notes page.
 app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
+// API GET Requests. Below code handles when users "visit" notes page.
+app.get("/api/notes", function (req, res) {
+    res.json(data);
+});
+
+//API POST Requests. Below code handles when users "visit" notes page.
+app.post("/api/notes", function (req, res) {
+    data.push(req.body);
+});
+
+app.delete("/api/notes/:id", function (req, res) {
+    var id = parseInt(req.params.id);
+    delete data["notes" + id];
+    res.json(data);
+
+});
+
+// HTML GET Requests. Below code handles when users "visit" other pages not defined in the route handling.
 app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "./public/index.html"));
 });
-
-// API routes Requests. 
-
-// Below code handles when users "visit" a page.
-app.get("/api/notes", function (req, res) {
-    return res.json(path.join(__dirname, "/db/db.json"));
-});
-
-
-
 
 // Starts the server to begin listening
 app.listen(PORT, function () {
