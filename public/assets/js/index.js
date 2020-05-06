@@ -3,7 +3,10 @@ var $noteText = $(".note-textarea");
 var $saveNoteBtn = $(".save-note");
 var $newNoteBtn = $(".new-note");
 var $noteList = $(".list-container .list-group");
-var idcount = 0;
+
+// idCount is used to keep track of the notes in the db and set a unique identifier
+var idCount = 0;
+
 // activeNote is used to keep track of the note in the textarea
 var activeNote = {};
 
@@ -52,7 +55,7 @@ var renderActiveNote = function() {
 // Get the note data from the inputs, save it to the db and update the view
 var handleNoteSave = function() {
   var newNote = {
-    id: idcount++,
+    id: idCount++,
     title: $noteTitle.val(),
     text: $noteText.val()
   };
