@@ -1,11 +1,11 @@
 // Dependencies
 var express = require("express");
-var fs = require("fs");
 var path = require("path");
 
 // Tells node that we are creating an "express" server
 var app = express();
 
+app.use(express.static(__dirname + '/public'));
 // Sets an initial Port
 var PORT = process.env.PORT || 8080;
 
@@ -20,7 +20,7 @@ var data = require("./db/db.json");
 
 // HTML GET Requests. Below code handles when users "visit" notes page.
 app.get("/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "./public/notes.html"));
+    res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
 // API GET Requests. Below code handles when users "visit" notes page.
@@ -31,18 +31,22 @@ app.get("/api/notes", function (req, res) {
 //API POST Requests. Below code handles when users "visit" notes page.
 app.post("/api/notes", function (req, res) {
     data.push(req.body);
+    res.json(data);
 });
 
-app.delete("/api/notes/:id", function (req, res) {
-    var id = parseInt(req.params.id);
-    delete data["notes" + id];
-    res.json(data);
 
+app.delete("/api/notes/:id", function (req, res) {
+    const id = Number(req.params.id);
+    const newNotes = data.filter((el) => el.id != id);
+    if(newNotes){
+        data = newNotes;
+        res.json(data);
+    }
 });
 
 // HTML GET Requests. Below code handles when users "visit" other pages not defined in the route handling.
 app.get("*", function (req, res) {
-    res.sendFile(path.join(__dirname, "./public/index.html"));
+    res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
 // Starts the server to begin listening
